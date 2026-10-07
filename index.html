@@ -8,10 +8,10 @@
         body { margin: 0; background: #0f0c1b; color: #fff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; overflow: hidden; }
         h1 { margin: 5px 0; color: #b55fe6; font-size: 26px; text-shadow: 0 0 10px rgba(181, 95, 230, 0.5); }
         #gameContainer { position: relative; border: 4px solid #b55fe6; border-radius: 12px; overflow: hidden; background: #16122c; box-shadow: 0 0 30px rgba(0, 0, 0, 0.7); }
-        canvas { display: block; cursor: crosshair; }
-        #ui { position: absolute; top: 15px; left: 15px; right: 15px; display: flex; justify-content: space-between; font-size: 18px; font-weight: bold; text-shadow: 2px 2px 4px #000; pointer-events: none; }
-        .stat-box { background: rgba(0,0,0,0.6); padding: 5px 12px; border-radius: 6px; border: 1px solid #443c6c; }
-        #msg { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 28px; font-weight: bold; text-align: center; display: none; text-shadow: 3px 3px 6px #000; background: rgba(0, 0, 0, 0.85); padding: 20px 30px; border-radius: 10px; border: 2px solid #fff; width: 80%; box-sizing: border-box; }
+        canvas { display: block; cursor: crosshair; background: #16122c; }
+        #ui { position: absolute; top: 15px; left: 15px; right: 15px; display: flex; justify-content: space-between; font-size: 18px; font-weight: bold; text-shadow: 2px 2px 4px #000; pointer-events: none; z-index: 10; }
+        .stat-box { background: rgba(0,0,0,0.7); padding: 5px 12px; border-radius: 6px; border: 1px solid #443c6c; }
+        #msg { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 24px; font-weight: bold; text-align: center; display: none; text-shadow: 3px 3px 6px #000; background: rgba(0, 0, 0, 0.9); padding: 20px 20px; border-radius: 10px; border: 2px solid #fff; width: 85%; box-sizing: border-box; z-index: 20; }
         .btn-container { margin-top: 15px; display: flex; gap: 10px; }
         button { padding: 10px 20px; font-size: 16px; font-weight: bold; border: none; border-radius: 6px; background: #e94560; color: white; cursor: pointer; transition: 0.2s; }
         button:hover { background: #ff6b81; transform: scale(1.05); }
@@ -43,48 +43,36 @@ const ammoText = document.getElementById("ammoText");
 const msg = document.getElementById("msg");
 const nextBtn = document.getElementById("nextBtn");
 
-// Cấu hình trò chơi
 let currentLevel = 1;
 let ammo = 10;
 let gameOver = false;
 let gameWon = false;
 let bullets = [];
-let mouseX = 0;
-let mouseY = 0;
+let mouseX = 250;
+let mouseY = 325;
 
-// Khởi tạo Sát thủ Darling (Giao diện da tím ngầu như The Rock)
 const player = { x: 50, y: 500, width: 40, height: 70 };
-
-// Khởi tạo Kẻ địch Donald Trump (Màu cam, tóc vàng, áo vest xanh)
 let enemy = { x: 400, y: 200, width: 40, height: 70, alive: true };
-
-// Hệ thống danh sách chướng ngại vật (Tường) thay đổi theo thuật toán 369 màn
 let walls = [];
 
-// Theo dõi vị trí chuột để vẽ tia laser ngắm màu đỏ
 canvas.addEventListener("mousemove", (e) => {
     const rect = canvas.getBoundingClientRect();
     mouseX = e.clientX - rect.left;
     mouseY = e.clientY - rect.top;
 });
 
-// Sự kiện click chuột để nổ súng
 canvas.addEventListener("mousedown", (e) => {
     if (gameOver || gameWon || ammo <= 0) return;
 
-    // Súng đặt ở vị trí tay của Sát thủ
     const gunX = player.x + player.width;
     const gunY = player.y + 25;
-
-    // Tính toán góc bắn dựa trên vị trí chuột
     const angle = Math.atan2(mouseY - gunY, mouseX - gunX);
     
-    // Đạn bay với tốc độ cao
     bullets.push({
         x: gunX,
         y: gunY,
-        vx: Math.cos(angle) * 14,
-        vy: Math.sin(angle) * 14,
+        vx: Math.cos(angle) * 12,
+        vy: Math.sin(angle) * 12,
         radius: 6,
         bounces: 0
     });
@@ -93,7 +81,6 @@ canvas.addEventListener("mousedown", (e) => {
     ammoText.innerText = ammo;
 });
 
-// Hàm tạo màn chơi tự động từ màn 1 đến 369 với cấu trúc khác nhau
 function generateLevel(lvl) {
     ammo = 10;
     ammoText.innerText = ammo;
@@ -105,24 +92,20 @@ function generateLevel(lvl) {
     enemy.alive = true;
     levelText.innerText = lvl;
 
-    // Cố định mặt đất
     walls = [{ x: 0, y: 580, width: 500, height: 70 }];
 
-    // Thuật toán thay đổi vị trí của Donald Trump theo từng màn chơi
-    enemy.x = 350 + (Math.sin(lvl) * 60);
-    enemy.y = 450 - ((lvl % 5) * 60);
+    // Thuật toán đổi vị trí Donald Trump
+    enemy.x = 340 + (Math.sin(lvl * 10) * 50);
+    enemy.y = 420 - ((lvl % 4) * 60);
 
-    // Sinh các kiểu chướng ngại vật/kiểu chơi khác nhau dựa theo số màn
+    // Thuật toán đổi kiểu chướng ngại vật theo màn
     if (lvl % 3 === 1) {
-        // Kiểu chơi 1: Tường chắn dọc ở giữa (Đòi hỏi bắn nảy trần hoặc nảy đất)
-        walls.push({ x: 230, y: 150 + (lvl % 4) * 30, width: 40, height: 250 });
+        walls.push({ x: 230, y: 180, width: 40, height: 220 });
     } else if (lvl % 3 === 2) {
-        // Kiểu chơi 2: Tường chắn ngang lơ lửng (Đòi hỏi bắn luồn lách hoặc góc hẹp)
-        walls.push({ x: 180, y: 300, width: 200, height: 30 });
+        walls.push({ x: 180, y: 320, width: 180, height: 30 });
     } else {
-        // Kiểu chơi 3: Màn chơi nhiều tầng chướng ngại vật phức tạp
-        walls.push({ x: 200, y: 100, width: 40, height: 200 });
-        walls.push({ x: 280, y: 350, width: 120, height: 30 });
+        walls.push({ x: 220, y: 120, width: 40, height: 180 });
+        walls.push({ x: 300, y: 380, width: 100, height: 30 });
     }
 }
 
@@ -136,6 +119,7 @@ function nextLevel() {
         generateLevel(currentLevel);
     } else {
         msg.innerHTML = "<span style='color: #ffeb3b;'>BẠN ĐÃ PHÁ ĐẢO TOÀN BỘ 369 MÀN CHƠI!</span>";
+        msg.style.display = "block";
     }
 }
 
@@ -146,7 +130,6 @@ function checkCollision(rect1, rect2) {
            rect1.y + rect1.height > rect2.y;
 }
 
-// Cập nhật logic game
 function update() {
     if (gameOver || gameWon) return;
 
@@ -155,18 +138,15 @@ function update() {
         b.x += b.vx;
         b.y += b.vy;
 
-        // Bắn nảy hai tường bên trái/phải
         if (b.x - b.radius < 0 || b.x + b.radius > canvas.width) {
             b.vx *= -1;
             b.bounces++;
         }
-        // Bắn nảy trần nhà
         if (b.y - b.radius < 0) {
             b.vy *= -1;
             b.bounces++;
         }
 
-        // Xử lý va chạm với hệ thống tường chắn
         walls.forEach(w => {
             let bulletRect = { x: b.x - b.radius, y: b.y - b.radius, width: b.radius * 2, height: b.radius * 2 };
             if (checkCollision(bulletRect, w)) {
@@ -176,7 +156,6 @@ function update() {
             }
         });
 
-        // Xử lý bắn trúng Donald Trump
         if (enemy.alive) {
             let bulletRect = { x: b.x - b.radius, y: b.y - b.radius, width: b.radius * 2, height: b.radius * 2 };
             if (checkCollision(bulletRect, enemy)) {
@@ -185,13 +164,11 @@ function update() {
             }
         }
 
-        // Hủy đạn nếu nảy quá nhiều lần hoặc rớt xuống hố
-        if (b.bounces > 8 || b.y > canvas.height) {
+        if (b.bounces > 6 || b.y > canvas.height) {
             bullets.splice(i, 1);
         }
     }
 
-    // Kiểm tra điều kiện Thắng/Thua
     if (!enemy.alive && !gameWon) {
         gameWon = true;
         msg.innerHTML = "<span style='color: #4caf50;'>chúc mừng thằng da đen trước màn hình</span>";
@@ -204,11 +181,11 @@ function update() {
     }
 }
 
-// Vẽ đồ họa game
 function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "#16122c";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // 1. Vẽ các bức tường vững chắc
+    // Vẽ tường chắn
     ctx.fillStyle = "#342a56";
     walls.forEach(w => {
         ctx.fillRect(w.x, w.y, w.width, w.height);
@@ -216,68 +193,64 @@ function draw() {
         ctx.strokeRect(w.x, w.y, w.width, w.height);
     });
 
-    // 2. Vẽ TIA LASER NGẮM MÀU ĐỎ từ súng đến vị trí chuột
+    // Vẽ tia laser đỏ ngắm súng
     if (!gameOver && !gameWon && ammo > 0) {
-        ctx.strokeStyle = "rgba(255, 0, 0, 0.6)";
-        ctx.lineWidth = 2;
-        ctx.setLineDash([5, 5]); // Nét đứt cho giống tia ngắm laser
+        ctx.strokeStyle = "rgba(255, 0, 0, 0.8)";
+        ctx.lineWidth = 2.5;
         ctx.beginPath();
         ctx.moveTo(player.x + player.width, player.y + 25);
         ctx.lineTo(mouseX, mouseY);
         ctx.stroke();
-        ctx.setLineDash([]); // Trở lại nét liền
     }
 
-    // 3. Vẽ Sát thủ Darling (Giao diện Đô Con The Rock - Da Tím)
-    ctx.fillStyle = "#8a2be2"; // Thân hình màu da tím đặc trưng
+    // Vẽ The Rock (Darling da tím)
+    ctx.fillStyle = "#8a2be2";
     ctx.fillRect(player.x, player.y, player.width, player.height);
-    // Cơ bắp cuồn cuộn kiểu The Rock (Vẽ thêm cơ tay)
     ctx.fillStyle = "#6a1b9a";
-    ctx.fillRect(player.x + player.width - 5, player.y + 20, 15, 15); 
-    // Đầu trọc thương hiệu của The Rock
+    ctx.fillRect(player.x + player.width - 5, player.y + 20, 12, 12); 
     ctx.fillStyle = "#a142f4";
     ctx.beginPath();
-    ctx.arc(player.x + player.width/2, player.y - 10, 16, 0, Math.PI * 2);
+    ctx.arc(player.x + player.width/2, player.y - 12, 16, 0, Math.PI * 2);
     ctx.fill();
-    // Kính râm sát thủ
     ctx.fillStyle = "#000";
-    ctx.fillRect(player.x + player.width/2, player.y - 12, 16, 6);
+    ctx.fillRect(player.x + player.width/2 - 2, player.y - 15, 16, 6);
 
-    // 4. Vẽ Mục tiêu Donald Trump (Da cam, tóc vàng dựng ngược, vest xanh)
+    // Vẽ Donald Trump (Áo xanh, mặt cam, tóc vàng)
     if (enemy.alive) {
-        ctx.fillStyle = "#0d47a1"; // Áo vest màu xanh lịch lãm
+        ctx.fillStyle = "#0d47a1"; 
         ctx.fillRect(enemy.x, enemy.y, enemy.width, enemy.height);
-        // Khuôn mặt màu cam
         ctx.fillStyle = "#ffb74d";
         ctx.beginPath();
-        ctx.arc(enemy.x + enemy.width/2, enemy.y - 10, 16, 0, Math.PI * 2);
+        ctx.arc(enemy.x + enemy.width/2, enemy.y - 12, 16, 0, Math.PI * 2);
         ctx.fill();
-        // Mái tóc màu vàng dựng ngược thương hiệu của Donald Trump
         ctx.fillStyle = "#ffd54f";
         ctx.beginPath();
-        ctx.moveTo(enemy.x + 2, enemy.y - 22);
-        ctx.lineTo(enemy.x + enemy.width - 2, enemy.y - 22);
-        ctx.lineTo(enemy.x + enemy.width/2 + 10, enemy.y - 32);
+        ctx.moveTo(enemy.x + 2, enemy.y - 24);
+        ctx.lineTo(enemy.x + enemy.width - 2, enemy.y - 24);
+        ctx.lineTo(enemy.x + enemy.width/2 + 8, enemy.y - 34);
         ctx.closePath();
-ctx.fill();
-// Cà vạt màu đỏ nổi bật khoác trên áo vest
-ctx.fillStyle = "#d32f2f";
-ctx.fillRect(enemy.x + enemy.width/2 - 3, enemy.y, 6, 20);
+        ctx.fill();
+        ctx.fillStyle = "#d32f2f";
+        ctx.fillRect(enemy.x + enemy.width/2 - 3, enemy.y, 6, 18);
+    }
+
+    // Vẽ viên đạn
+    ctx.fillStyle = "#ffeb3b";
+    bullets.forEach(b => {
+        ctx.beginPath();
+        ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
+        ctx.fill();
+    });
 }
-// 5. Vẽ viên đạn bay
-ctx.fillStyle = "#ffeb3b";
-bullets.forEach(b => {
-ctx.beginPath();
-ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
-ctx.fill();
-});
-}
-// Vòng lặp chính của trò chơi
+
 function gameLoop() {
-update();
-draw();
-requestAnimationFrame(gameLoop);
+    update();
+    draw();
+    requestAnimationFrame(gameLoop);
 }
-// Bắt đầu game từ màn 1
+
 generateLevel(currentLevel);
 gameLoop();
+</script>
+</body>
+</html>
