@@ -3,36 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Darling - The Rock Sát Thủ Diệt Trump</title>
+    <title>Darling Roblox vs Real Trump - Eagle Ultimate Edition</title>
     <style>
-        body { margin: 0; background: #0f0c1b; color: #fff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; overflow: hidden; }
-        h1 { margin: 5px 0; color: #b55fe6; font-size: 26px; text-shadow: 0 0 10px rgba(181, 95, 230, 0.5); }
-        #gameContainer { position: relative; border: 4px solid #b55fe6; border-radius: 12px; overflow: hidden; background: #16122c; box-shadow: 0 0 30px rgba(0, 0, 0, 0.7); }
-        canvas { display: block; cursor: crosshair; background: #16122c; }
-        #ui { position: absolute; top: 15px; left: 15px; right: 15px; display: flex; justify-content: space-between; font-size: 18px; font-weight: bold; text-shadow: 2px 2px 4px #000; pointer-events: none; z-index: 10; }
-        .stat-box { background: rgba(0,0,0,0.7); padding: 5px 12px; border-radius: 6px; border: 1px solid #443c6c; }
-        #msg { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 24px; font-weight: bold; text-align: center; display: none; text-shadow: 3px 3px 6px #000; background: rgba(0, 0, 0, 0.9); padding: 20px 20px; border-radius: 10px; border: 2px solid #fff; width: 85%; box-sizing: border-box; z-index: 20; }
+        body { margin: 0; background: #0b0914; color: #fff; font-family: 'Courier New', Courier, monospace; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; overflow: hidden; }
+        h1 { margin: 5px 0; color: #d442f5; font-size: 24px; text-shadow: 0 0 12px #d442f5; font-weight: bold; }
+        #gameContainer { position: relative; border: 5px solid #d442f5; border-radius: 4px; overflow: hidden; background: #120e24; box-shadow: 0 0 35px rgba(212, 66, 245, 0.4); }
+        canvas { display: block; cursor: crosshair; }
+        #ui { position: absolute; top: 15px; left: 15px; right: 15px; display: flex; justify-content: space-between; font-size: 18px; font-weight: bold; text-shadow: 2px 2px 0px #000; pointer-events: none; z-index: 10; }
+        .stat-box { background: #000; padding: 6px 14px; border: 2px solid #443c6c; }
+        #msg { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 26px; font-weight: bold; text-align: center; display: none; text-shadow: 3px 3px 0px #000; background: rgba(0, 0, 0, 0.95); padding: 25px; border: 3px solid #fff; width: 85%; box-sizing: border-box; z-index: 20; letter-spacing: 1px; }
         .btn-container { margin-top: 15px; display: flex; gap: 10px; }
-        button { padding: 10px 20px; font-size: 16px; font-weight: bold; border: none; border-radius: 6px; background: #e94560; color: white; cursor: pointer; transition: 0.2s; }
-        button:hover { background: #ff6b81; transform: scale(1.05); }
+        button { padding: 12px 24px; font-size: 16px; font-weight: bold; border: 2px solid #fff; background: #e94560; color: white; cursor: pointer; box-shadow: 3px 3px 0px #000; }
+        button:hover { background: #ff6b81; transform: translate(-2px, -2px); box-shadow: 5px 5px 0px #000; }
+        button:active { transform: translate(0px, 0px); box-shadow: 3px 3px 0px #000; }
         button.next-btn { background: #4caf50; }
         button.next-btn:hover { background: #66bb6a; }
     </style>
 </head>
 <body>
 
-    <h1>SÁT THỦ DARLING (THE ROCK)</h1>
+    <h1>ROBLOX DARLING VS DONALD TRUMP</h1>
     <div id="gameContainer">
         <div id="ui">
-            <div class="stat-box">Màn chơi: <span id="levelText">1</span> / 369</div>
-            <div class="stat-box">Số đạn: <span id="ammoText">10</span> 💣</div>
+            <div class="stat-box">STAGE: <span id="levelText">1</span> / 369</div>
+            <div class="stat-box">AMMO: <span id="ammoText">10</span> 🦅</div>
         </div>
         <div id="msg"></div>
         <canvas id="gameCanvas" width="500" height="650"></canvas>
     </div>
     <div class="btn-container">
-        <button onclick="resetLevel()">Chơi Lại Màn Này</button>
-        <button id="nextBtn" class="next-btn" onclick="nextLevel()" style="display:none;">Qua Màn Tiếp Theo</button>
+        <button onclick="resetLevel()">CHƠI LẠI MÀN NÀY</button>
+        <button id="nextBtn" class="next-btn" onclick="nextLevel()" style="display:none;">TIẾP THEO</button>
     </div>
 
 <script>
@@ -43,16 +44,89 @@ const ammoText = document.getElementById("ammoText");
 const msg = document.getElementById("msg");
 const nextBtn = document.getElementById("nextBtn");
 
+// Hệ thống âm thanh cao cấp giả lập tiếng chim đại bàng rít hú cực to rõ
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+function playSound(type) {
+    try {
+        if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+        
+        const gainNode = audioCtx.createGain();
+        gainNode.connect(audioCtx.destination);
+
+        if (type === 'shoot') { 
+            // TIẾNG HÚ ĐẠI BÀNG ĐAN XEN TẦN SỐ CAO ĐANH THÉP
+            const osc1 = audioCtx.createOscillator();
+            const osc2 = audioCtx.createOscillator();
+            
+            osc1.connect(gainNode);
+            osc2.connect(gainNode);
+            
+            osc1.type = 'sawtooth';
+            osc1.frequency.setValueAtTime(850, audioCtx.currentTime);
+            osc1.frequency.linearRampToValueAtTime(1600, audioCtx.currentTime + 0.08);
+            osc1.frequency.exponentialRampToValueAtTime(400, audioCtx.currentTime + 0.35);
+            
+            osc2.type = 'sine';
+            osc2.frequency.setValueAtTime(870, audioCtx.currentTime);
+            osc2.frequency.linearRampToValueAtTime(1620, audioCtx.currentTime + 0.08);
+            osc2.frequency.exponentialRampToValueAtTime(420, audioCtx.currentTime + 0.35);
+            
+            gainNode.gain.setValueAtTime(0.01, audioCtx.currentTime);
+            gainNode.gain.linearRampToValueAtTime(0.35, audioCtx.currentTime + 0.06); // Âm lượng to hơn
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
+            
+            osc1.start(); osc2.start();
+            osc1.stop(audioCtx.currentTime + 0.35);
+            osc2.stop(audioCtx.currentTime + 0.35);
+            
+        } else if (type === 'bounce') { 
+            // Tiếng đạn đại bàng đập vào tường đá
+            const osc = audioCtx.createOscillator();
+            osc.connect(gainNode);
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(260, audioCtx.currentTime);
+            osc.frequency.setValueAtTime(420, audioCtx.currentTime + 0.03);
+            gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
+            gainNode.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.07);
+            osc.start(); osc.stop(audioCtx.currentTime + 0.07);
+        } else if (type === 'win') { 
+            const osc = audioCtx.createOscillator();
+            osc.connect(gainNode);
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(440, audioCtx.currentTime);
+            osc.frequency.setValueAtTime(554, audioCtx.currentTime + 0.1);
+            osc.frequency.setValueAtTime(659, audioCtx.currentTime + 0.2);
+            gainNode.gain.setValueAtTime(0.2, audioCtx.currentTime);
+            gainNode.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+            osc.start(); osc.stop(audioCtx.currentTime + 0.4);
+        } else if (type === 'lose') { 
+            const osc = audioCtx.createOscillator();
+            osc.connect(gainNode);
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(180, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(40, audioCtx.currentTime + 0.4);
+            gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+            gainNode.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+            osc.start(); osc.stop(audioCtx.currentTime + 0.4);
+        }
+    } catch(e) {}
+}
+
 let currentLevel = 1;
 let ammo = 10;
 let gameOver = false;
 let gameWon = false;
 let bullets = [];
+let particles = []; // Hệ thống sinh hạt nổ sinh động
 let mouseX = 250;
 let mouseY = 325;
+let wingAnimationTimer = 0; 
 
-const player = { x: 50, y: 500, width: 40, height: 70 };
-let enemy = { x: 400, y: 200, width: 40, height: 70, alive: true };
+const player = { x: 60, y: 490, width: 45, height: 80 };
+let enemy = { x: 400, y: 200, width: 45, height: 80, alive: true };
 let walls = [];
 
 canvas.addEventListener("mousemove", (e) => {
@@ -64,8 +138,9 @@ canvas.addEventListener("mousemove", (e) => {
 canvas.addEventListener("mousedown", (e) => {
     if (gameOver || gameWon || ammo <= 0) return;
 
-    const gunX = player.x + player.width;
-    const gunY = player.y + 25;
+    // Họng súng lục bạc của Darling
+    const gunX = player.x + player.width + 18;
+    const gunY = player.y + 23;
     const angle = Math.atan2(mouseY - gunY, mouseX - gunX);
     
     bullets.push({
@@ -73,13 +148,30 @@ canvas.addEventListener("mousedown", (e) => {
         y: gunY,
         vx: Math.cos(angle) * 12,
         vy: Math.sin(angle) * 12,
-        radius: 6,
+        angle: angle,
+        width: 34,  
+        height: 26,
         bounces: 0
     });
 
+    playSound('shoot'); 
     ammo--;
     ammoText.innerText = ammo;
 });
+
+// Tạo hiệu ứng hạt nổ tung tóe khi đạn trúng tường hoặc trúng Trump
+function createExplosion(x, y, color, count = 12) {
+    for (let i = 0; i < count; i++) {
+        particles.push({
+            x: x, y: y,
+            vx: (Math.random() - 0.5) * 6,
+            vy: (Math.random() - 0.5) * 6,
+            radius: Math.random() * 4 + 2,
+            alpha: 1,
+            color: color
+        });
+    }
+}
 
 function generateLevel(lvl) {
     ammo = 10;
@@ -89,23 +181,22 @@ function generateLevel(lvl) {
     msg.style.display = "none";
     nextBtn.style.display = "none";
     bullets = [];
+    particles = [];
     enemy.alive = true;
     levelText.innerText = lvl;
 
-    walls = [{ x: 0, y: 580, width: 500, height: 70 }];
+    walls = [{ x: 0, y: 570, width: 500, height: 80 }];
 
-    // Thuật toán đổi vị trí Donald Trump
-    enemy.x = 340 + (Math.sin(lvl * 10) * 50);
-    enemy.y = 420 - ((lvl % 4) * 60);
+    enemy.x = 330 + (Math.sin(lvl * 12) * 60);
+    enemy.y = 400 - ((lvl % 4) * 65);
 
-    // Thuật toán đổi kiểu chướng ngại vật theo màn
     if (lvl % 3 === 1) {
-        walls.push({ x: 230, y: 180, width: 40, height: 220 });
+        walls.push({ x: 230, y: 160, width: 45, height: 240 });
     } else if (lvl % 3 === 2) {
-        walls.push({ x: 180, y: 320, width: 180, height: 30 });
+        walls.push({ x: 160, y: 310, width: 200, height: 40 });
     } else {
-        walls.push({ x: 220, y: 120, width: 40, height: 180 });
-        walls.push({ x: 300, y: 380, width: 100, height: 30 });
+        walls.push({ x: 210, y: 100, width: 45, height: 200 });
+        walls.push({ x: 300, y: 360, width: 110, height: 40 });
     }
 }
 
@@ -118,7 +209,7 @@ function nextLevel() {
         currentLevel++;
         generateLevel(currentLevel);
     } else {
-        msg.innerHTML = "<span style='color: #ffeb3b;'>BẠN ĐÃ PHÁ ĐẢO TOÀN BỘ 369 MÀN CHƠI!</span>";
+        msg.innerHTML = "<span style='color: #ffeb3b;'>BẠN ĐÃ PHÁ ĐẢO TOÀN BỘ 369 MÀN!</span>";
         msg.style.display = "block";
     }
 }
@@ -133,124 +224,27 @@ function checkCollision(rect1, rect2) {
 function update() {
     if (gameOver || gameWon) return;
 
+    wingAnimationTimer += 0.25; 
+
+    // Cập nhật hiệu ứng hạt bụi nổ sinh động
+    for (let i = particles.length - 1; i >= 0; i--) {
+        let p = particles[i];
+        p.x += p.vx; p.y += p.vy;
+        p.alpha -= 0.03;
+        if (p.alpha <= 0) particles.splice(i, 1);
+    }
+
     for (let i = bullets.length - 1; i >= 0; i--) {
         let b = bullets[i];
         b.x += b.vx;
         b.y += b.vy;
+        b.angle = Math.atan2(b.vy, b.vx); 
 
-        if (b.x - b.radius < 0 || b.x + b.radius > canvas.width) {
-            b.vx *= -1;
-            b.bounces++;
+        // Va chạm biên trái/phải
+        if (b.x < 0 || b.x > canvas.width) {
+            b.vx *= -1; b.bounces++; playSound('bounce');
+            createExplosion(b.x, b.y, '#ffd54f', 6);
         }
-        if (b.y - b.radius < 0) {
-            b.vy *= -1;
-            b.bounces++;
-        }
+        // Va chạm trần
+        if (b.y < 0) {
 
-        walls.forEach(w => {
-            let bulletRect = { x: b.x - b.radius, y: b.y - b.radius, width: b.radius * 2, height: b.radius * 2 };
-            if (checkCollision(bulletRect, w)) {
-                if (b.x < w.x || b.x > w.x + w.width) b.vx *= -1;
-                else b.vy *= -1;
-                b.bounces++;
-            }
-        });
-
-        if (enemy.alive) {
-            let bulletRect = { x: b.x - b.radius, y: b.y - b.radius, width: b.radius * 2, height: b.radius * 2 };
-            if (checkCollision(bulletRect, enemy)) {
-                enemy.alive = false;
-                bullets.splice(i, 1);
-            }
-        }
-
-        if (b.bounces > 6 || b.y > canvas.height) {
-            bullets.splice(i, 1);
-        }
-    }
-
-    if (!enemy.alive && !gameWon) {
-        gameWon = true;
-        msg.innerHTML = "<span style='color: #4caf50;'>chúc mừng thằng da đen trước màn hình</span>";
-        msg.style.display = "block";
-        nextBtn.style.display = "inline-block";
-    } else if (enemy.alive && ammo === 0 && bullets.length === 0 && !gameOver) {
-        gameOver = true;
-        msg.innerHTML = "<span style='color: #f44336;'>bắn như tật</span>";
-        msg.style.display = "block";
-    }
-}
-
-function draw() {
-    ctx.fillStyle = "#16122c";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    // Vẽ tường chắn
-    ctx.fillStyle = "#342a56";
-    walls.forEach(w => {
-        ctx.fillRect(w.x, w.y, w.width, w.height);
-        ctx.strokeStyle = "#443c6c";
-        ctx.strokeRect(w.x, w.y, w.width, w.height);
-    });
-
-    // Vẽ tia laser đỏ ngắm súng
-    if (!gameOver && !gameWon && ammo > 0) {
-        ctx.strokeStyle = "rgba(255, 0, 0, 0.8)";
-        ctx.lineWidth = 2.5;
-        ctx.beginPath();
-        ctx.moveTo(player.x + player.width, player.y + 25);
-        ctx.lineTo(mouseX, mouseY);
-        ctx.stroke();
-    }
-
-    // Vẽ The Rock (Darling da tím)
-    ctx.fillStyle = "#8a2be2";
-    ctx.fillRect(player.x, player.y, player.width, player.height);
-    ctx.fillStyle = "#6a1b9a";
-    ctx.fillRect(player.x + player.width - 5, player.y + 20, 12, 12); 
-    ctx.fillStyle = "#a142f4";
-    ctx.beginPath();
-    ctx.arc(player.x + player.width/2, player.y - 12, 16, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = "#000";
-    ctx.fillRect(player.x + player.width/2 - 2, player.y - 15, 16, 6);
-
-    // Vẽ Donald Trump (Áo xanh, mặt cam, tóc vàng)
-    if (enemy.alive) {
-        ctx.fillStyle = "#0d47a1"; 
-        ctx.fillRect(enemy.x, enemy.y, enemy.width, enemy.height);
-        ctx.fillStyle = "#ffb74d";
-        ctx.beginPath();
-        ctx.arc(enemy.x + enemy.width/2, enemy.y - 12, 16, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.fillStyle = "#ffd54f";
-        ctx.beginPath();
-        ctx.moveTo(enemy.x + 2, enemy.y - 24);
-        ctx.lineTo(enemy.x + enemy.width - 2, enemy.y - 24);
-        ctx.lineTo(enemy.x + enemy.width/2 + 8, enemy.y - 34);
-        ctx.closePath();
-        ctx.fill();
-        ctx.fillStyle = "#d32f2f";
-        ctx.fillRect(enemy.x + enemy.width/2 - 3, enemy.y, 6, 18);
-    }
-
-    // Vẽ viên đạn
-    ctx.fillStyle = "#ffeb3b";
-    bullets.forEach(b => {
-        ctx.beginPath();
-        ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
-        ctx.fill();
-    });
-}
-
-function gameLoop() {
-    update();
-    draw();
-    requestAnimationFrame(gameLoop);
-}
-
-generateLevel(currentLevel);
-gameLoop();
-</script>
-</body>
-</html>
