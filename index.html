@@ -44,7 +44,6 @@ const ammoText = document.getElementById("ammoText");
 const msg = document.getElementById("msg");
 const nextBtn = document.getElementById("nextBtn");
 
-// Hệ thống âm thanh cao cấp giả lập tiếng chim đại bàng rít hú cực to rõ
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
 function playSound(type) {
@@ -57,7 +56,6 @@ function playSound(type) {
         gainNode.connect(audioCtx.destination);
 
         if (type === 'shoot') { 
-            // TIẾNG HÚ ĐẠI BÀNG ĐAN XEN TẦN SỐ CAO ĐANH THÉP
             const osc1 = audioCtx.createOscillator();
             const osc2 = audioCtx.createOscillator();
             
@@ -75,7 +73,7 @@ function playSound(type) {
             osc2.frequency.exponentialRampToValueAtTime(420, audioCtx.currentTime + 0.35);
             
             gainNode.gain.setValueAtTime(0.01, audioCtx.currentTime);
-            gainNode.gain.linearRampToValueAtTime(0.35, audioCtx.currentTime + 0.06); // Âm lượng to hơn
+            gainNode.gain.linearRampToValueAtTime(0.35, audioCtx.currentTime + 0.06); 
             gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
             
             osc1.start(); osc2.start();
@@ -83,7 +81,6 @@ function playSound(type) {
             osc2.stop(audioCtx.currentTime + 0.35);
             
         } else if (type === 'bounce') { 
-            // Tiếng đạn đại bàng đập vào tường đá
             const osc = audioCtx.createOscillator();
             osc.connect(gainNode);
             osc.type = 'triangle';
@@ -120,7 +117,7 @@ let ammo = 10;
 let gameOver = false;
 let gameWon = false;
 let bullets = [];
-let particles = []; // Hệ thống sinh hạt nổ sinh động
+let particles = []; 
 let mouseX = 250;
 let mouseY = 325;
 let wingAnimationTimer = 0; 
@@ -138,7 +135,6 @@ canvas.addEventListener("mousemove", (e) => {
 canvas.addEventListener("mousedown", (e) => {
     if (gameOver || gameWon || ammo <= 0) return;
 
-    // Họng súng lục bạc của Darling
     const gunX = player.x + player.width + 18;
     const gunY = player.y + 23;
     const angle = Math.atan2(mouseY - gunY, mouseX - gunX);
@@ -159,7 +155,6 @@ canvas.addEventListener("mousedown", (e) => {
     ammoText.innerText = ammo;
 });
 
-// Tạo hiệu ứng hạt nổ tung tóe khi đạn trúng tường hoặc trúng Trump
 function createExplosion(x, y, color, count = 12) {
     for (let i = 0; i < count; i++) {
         particles.push({
@@ -226,7 +221,6 @@ function update() {
 
     wingAnimationTimer += 0.25; 
 
-    // Cập nhật hiệu ứng hạt bụi nổ sinh động
     for (let i = particles.length - 1; i >= 0; i--) {
         let p = particles[i];
         p.x += p.vx; p.y += p.vy;
@@ -240,11 +234,142 @@ function update() {
         b.y += b.vy;
         b.angle = Math.atan2(b.vy, b.vx); 
 
-        // Va chạm biên trái/phải
         if (b.x < 0 || b.x > canvas.width) {
             b.vx *= -1; b.bounces++; playSound('bounce');
             createExplosion(b.x, b.y, '#ffd54f', 6);
         }
-        // Va chạm trần
         if (b.y < 0) {
-
+            b.vy *= -1; b.bounces++; playSound('bounce');
+            createExplosion(b.x, b.y, '#ffd54f', 6);
+        }
+        
+        walls.forEach(w => {
+            let bulletRect = { x: b.x - b.width/2, y: b.y - b.height/2, width: b.width, height: b.height };
+            if (checkCollision(bulletRect, w)) {
+                if (b.x < w.x || b.x > w.x + w.width) b.vx *= -1;
+                else b.vy *= -1;
+                b.bounces++;
+                playSound('bounce');
+createExplosion(b.x, b.y, '#ff6b81', 8);
+}
+});
+if (enemy.alive) {
+let bulletRect = { x: b.x - b.width/2, y: b.y - b.height/2, width: b.width, height: b.height };
+if (checkCollision(bulletRect, enemy)) {
+enemy.alive = false;
+createExplosion(b.x, b.y, '#ff1744', 25);
+bullets.splice(i, 1);
+}
+}
+if (b.bounces > 7 || b.y > canvas.height) {
+bullets.splice(i, 1);
+}
+}
+if (!enemy.alive && !gameWon) {
+gameWon = true;
+playSound('win');
+msg.innerHTML = "chúc mừng thằng da đen trước màn hình";
+msg.style.display = "block";
+nextBtn.style.display = "inline-block";
+} else if (enemy.alive && ammo === 0 && bullets.length === 0 && !gameOver) {
+gameOver = true;
+playSound('lose');
+msg.innerHTML = "bắn như tật";
+msg.style.display = "block";
+}
+}
+function draw() {
+ctx.fillStyle = "#120e24";
+ctx.fillRect(0, 0, canvas.width, canvas.height);
+walls.forEach(w => {
+ctx.fillStyle = "#2d264d";
+ctx.fillRect(w.x, w.y, w.width, w.height);
+ctx.strokeStyle = "#5a4d96";
+ctx.lineWidth = 4;
+ctx.strokeRect(w.x, w.y, w.width, w.height);
+});
+if (!gameOver && !gameWon && ammo > 0) {
+ctx.strokeStyle = "rgba(255, 10, 10, 0.95)";
+ctx.lineWidth = 3;
+ctx.shadowBlur = 8;
+ctx.shadowColor = "red";
+ctx.beginPath();
+ctx.moveTo(player.x + player.width + 12, player.y + 23);
+ctx.lineTo(mouseX, mouseY);
+ctx.stroke();
+ctx.shadowBlur = 0;
+}
+ctx.fillStyle = "#8a2be2";
+ctx.fillRect(player.x, player.y + 20, player.width, player.height - 20);
+ctx.fillStyle = "#a846ff";
+ctx.fillRect(player.x + 5, player.y - 15, player.width - 10, 35);
+ctx.fillStyle = "#000";
+ctx.fillRect(player.x + 18, player.y - 5, 25, 8);
+const gunX = player.x + player.width;
+const gunY = player.y + 18;
+ctx.fillStyle = "#e0e0e0";
+ctx.fillRect(gunX, gunY, 24, 9);
+ctx.fillStyle = "#ffffff";
+ctx.fillRect(gunX + 6, gunY - 2, 18, 3);
+ctx.fillStyle = "#505050";
+ctx.fillRect(gunX + 2, gunY + 9, 6, 11);
+if (enemy.alive) {
+ctx.fillStyle = "#0a369d";
+ctx.fillRect(enemy.x, enemy.y + 20, enemy.width, enemy.height - 20);
+ctx.fillStyle = "#ff1744";
+ctx.fillRect(enemy.x + enemy.width/2 - 4, enemy.y + 20, 8, 22);
+const headX = enemy.x + 4;
+const headY = enemy.y - 15;
+const headW = enemy.width - 8;
+const headH = 35;
+ctx.fillStyle = "#ffb74d";
+ctx.fillRect(headX, headY, headW, headH);
+ctx.fillStyle = "#ffd54f";
+ctx.fillRect(headX - 3, headY - 6, headW + 6, 10);
+ctx.beginPath();
+ctx.moveTo(headX - 3, headY + 4);
+ctx.lineTo(headX + 12, headY - 12);
+ctx.lineTo(headX + headW + 2, headY + 4);
+ctx.closePath();
+ctx.fill();
+ctx.fillStyle = "#fff";
+ctx.fillRect(headX + 4, headY + 10, 8, 4);
+ctx.fillRect(headX + headW - 12, headY + 10, 8, 4);
+ctx.fillStyle = "#000";
+ctx.fillRect(headX + 6, headY + 10, 4, 4);
+ctx.fillRect(headX + headW - 10, headY + 4, 4, 4);
+ctx.fillStyle = "#ff5252";
+ctx.fillRect(headX + headW/2 - 6, headY + 22, 12, 4);
+}
+particles.forEach(p => {
+ctx.save();
+ctx.globalAlpha = p.alpha;
+ctx.fillStyle = p.color;
+ctx.beginPath();
+ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+ctx.fill();
+ctx.restore();
+});
+bullets.forEach(b => {
+ctx.save();
+ctx.translate(b.x, b.y);
+ctx.rotate(b.angle);
+ctx.fillStyle = "#5d4037";
+let wingY = Math.sin(wingAnimationTimer) * 14;
+ctx.beginPath();
+ctx.moveTo(-12, 0); ctx.lineTo(0, -wingY - 16); ctx.lineTo(12, 0); ctx.lineTo(0, wingY + 16);
+ctx.closePath(); ctx.fill();
+ctx.fillStyle = "#3e2723"; ctx.fillRect(-16, -7, 26, 14);
+ctx.fillStyle = "#fff"; ctx.fillRect(-22, -5, 7, 10);
+ctx.fillStyle = "#ffffff"; ctx.fillRect(10, -8, 11, 16);
+ctx.fillStyle = "#ffd54f"; ctx.beginPath(); ctx.moveTo(21, -4); ctx.lineTo(29, 0); ctx.lineTo(21, 4); ctx.closePath(); ctx.fill();
+ctx.restore();
+});
+}
+function gameLoop() {
+update();
+draw();
+requestAnimationFrame(gameLoop);
+}
+generateLevel(currentLevel);
+gameLoop();
