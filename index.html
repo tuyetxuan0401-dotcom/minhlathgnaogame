@@ -259,3 +259,25 @@ function draw() {
         ctx.lineTo(enemy.x + enemy.width - 2, enemy.y - 22);
         ctx.lineTo(enemy.x + enemy.width/2 + 10, enemy.y - 32);
         ctx.closePath();
+ctx.fill();
+// Cà vạt màu đỏ nổi bật khoác trên áo vest
+ctx.fillStyle = "#d32f2f";
+ctx.fillRect(enemy.x + enemy.width/2 - 3, enemy.y, 6, 20);
+}
+// 5. Vẽ viên đạn bay
+ctx.fillStyle = "#ffeb3b";
+bullets.forEach(b => {
+ctx.beginPath();
+ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
+ctx.fill();
+});
+}
+// Vòng lặp chính của trò chơi
+function gameLoop() {
+update();
+draw();
+requestAnimationFrame(gameLoop);
+}
+// Bắt đầu game từ màn 1
+generateLevel(currentLevel);
+gameLoop();
