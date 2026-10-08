@@ -1,375 +1,507 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Darling Roblox vs Real Trump - Eagle Ultimate Edition</title>
-    <style>
-        body { margin: 0; background: #0b0914; color: #fff; font-family: 'Courier New', Courier, monospace; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; overflow: hidden; }
-        h1 { margin: 5px 0; color: #d442f5; font-size: 24px; text-shadow: 0 0 12px #d442f5; font-weight: bold; }
-        #gameContainer { position: relative; border: 5px solid #d442f5; border-radius: 4px; overflow: hidden; background: #120e24; box-shadow: 0 0 35px rgba(212, 66, 245, 0.4); }
-        canvas { display: block; cursor: crosshair; }
-        #ui { position: absolute; top: 15px; left: 15px; right: 15px; display: flex; justify-content: space-between; font-size: 18px; font-weight: bold; text-shadow: 2px 2px 0px #000; pointer-events: none; z-index: 10; }
-        .stat-box { background: #000; padding: 6px 14px; border: 2px solid #443c6c; }
-        #msg { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 26px; font-weight: bold; text-align: center; display: none; text-shadow: 3px 3px 0px #000; background: rgba(0, 0, 0, 0.95); padding: 25px; border: 3px solid #fff; width: 85%; box-sizing: border-box; z-index: 20; letter-spacing: 1px; }
-        .btn-container { margin-top: 15px; display: flex; gap: 10px; }
-        button { padding: 12px 24px; font-size: 16px; font-weight: bold; border: 2px solid #fff; background: #e94560; color: white; cursor: pointer; box-shadow: 3px 3px 0px #000; }
-        button:hover { background: #ff6b81; transform: translate(-2px, -2px); box-shadow: 5px 5px 0px #000; }
-        button:active { transform: translate(0px, 0px); box-shadow: 3px 3px 0px #000; }
-        button.next-btn { background: #4caf50; }
-        button.next-btn:hover { background: #66bb6a; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trump vs Putin - Click Game</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #54ddd2;
+    overflow-x: hidden;
+}
+
+.header {
+    height: 75px;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 25px;
+    box-shadow: 0 3px 10px #0003;
+}
+
+.logo {
+    font-size: 28px;
+    font-weight: 900;
+    color: #0d4775;
+}
+
+.info {
+    display: flex;
+    gap: 30px;
+    align-items: center;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+button {
+    border: none;
+    padding: 12px 22px;
+    border-radius: 10px;
+    background: #ff4757;
+    color: white;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    transform: scale(1.05);
+}
+
+/* GAME */
+#game {
+    position: relative;
+    width: 900px;
+    max-width: 95%;
+    height: 560px;
+    margin: 20px auto;
+    overflow: hidden;
+    border-radius: 15px;
+
+    background:
+        linear-gradient(
+            #62b4e8 0%,
+            #a7d8f2 65%,
+            #83bd67 65%,
+            #83bd67 100%
+        );
+
+    box-shadow: 0 10px 30px #0005;
+}
+
+/* Buildings */
+
+.building {
+    position: absolute;
+    bottom: 0;
+    width: 180px;
+    height: 390px;
+    background: #d8d2c8;
+    border: 5px solid #777;
+}
+
+.left-building {
+    left: 20px;
+}
+
+.right-building {
+    right: 20px;
+    height: 430px;
+    background: #c8d8e1;
+}
+
+.window {
+    position: absolute;
+    width: 32px;
+    height: 48px;
+    background: #73bde5;
+    border: 4px solid white;
+}
+
+/* CHARACTERS */
+
+.character {
+    position: absolute;
+    bottom: 35px;
+    width: 180px;
+    text-align: center;
+    cursor: pointer;
+    user-select: none;
+    transition: transform .12s;
+}
+
+.character:hover {
+    transform: scale(1.08);
+}
+
+.trump {
+    left: 250px;
+}
+
+.putin {
+    right: 250px;
+}
+
+.face {
+    width: 105px;
+    height: 105px;
+    margin: auto;
+    border-radius: 50%;
+    border: 6px solid white;
+    box-shadow: 0 6px 15px #0005;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 55px;
+    font-weight: 900;
+}
+
+/* màu tóc / khuôn mặt tượng trưng */
+
+.trump .face {
+    background: #f4c49b;
+}
+
+.putin .face {
+    background: #e6b995;
+}
+
+.name {
+    margin-top: 8px;
+    background: white;
+    border-radius: 10px;
+    padding: 8px;
+    font-size: 19px;
+    font-weight: bold;
+}
+
+/* TARGET */
+
+.target {
+    position: absolute;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: 4px solid white;
+
+    background: #ffca28;
+
+    box-shadow: 0 4px 12px #0006;
+
+    cursor: pointer;
+
+    animation: pop .2s ease;
+}
+
+@keyframes pop {
+    from {
+        transform: scale(.2);
+    }
+
+    to {
+        transform: scale(1);
+    }
+}
+
+/* GAME OVER */
+
+#gameOver {
+    position: absolute;
+    inset: 0;
+
+    background: #0009;
+
+    display: none;
+
+    align-items: center;
+    justify-content: center;
+
+    z-index: 100;
+}
+
+.result {
+    background: white;
+    padding: 35px;
+    border-radius: 20px;
+    text-align: center;
+    min-width: 300px;
+}
+
+.result h2 {
+    font-size: 35px;
+    margin-top: 0;
+}
+
+.instructions {
+    text-align: center;
+    font-size: 17px;
+    font-weight: bold;
+}
+</style>
 </head>
+
 <body>
 
-    <h1>ROBLOX DARLING VS DONALD TRUMP</h1>
-    <div id="gameContainer">
-        <div id="ui">
-            <div class="stat-box">STAGE: <span id="levelText">1</span> / 369</div>
-            <div class="stat-box">AMMO: <span id="ammoText">10</span> 🦅</div>
+<div class="header">
+
+    <div class="logo">
+        🎯 CLICK ARENA
+    </div>
+
+    <div class="info">
+        <div>
+            Điểm:
+            <span id="score">0</span>
         </div>
-        <div id="msg"></div>
-        <canvas id="gameCanvas" width="500" height="650"></canvas>
+
+        <div>
+            ⏱
+            <span id="time">30</span>s
+        </div>
+
+        <button onclick="startGame()">
+            BẮT ĐẦU
+        </button>
     </div>
-    <div class="btn-container">
-        <button onclick="resetLevel()">CHƠI LẠI MÀN NÀY</button>
-        <button id="nextBtn" class="next-btn" onclick="nextLevel()" style="display:none;">TIẾP THEO</button>
+
+</div>
+
+
+<div id="game">
+
+    <!-- BUILDINGS -->
+
+    <div class="building left-building">
+
+        <div class="window" style="top:50px;left:25px"></div>
+        <div class="window" style="top:50px;right:25px"></div>
+
+        <div class="window" style="top:130px;left:25px"></div>
+        <div class="window" style="top:130px;right:25px"></div>
+
+        <div class="window" style="top:210px;left:25px"></div>
+        <div class="window" style="top:210px;right:25px"></div>
+
     </div>
+
+
+    <div class="building right-building">
+
+        <div class="window" style="top:60px;left:25px"></div>
+        <div class="window" style="top:60px;right:25px"></div>
+
+        <div class="window" style="top:150px;left:25px"></div>
+        <div class="window" style="top:150px;right:25px"></div>
+
+        <div class="window" style="top:240px;left:25px"></div>
+        <div class="window" style="top:240px;right:25px"></div>
+
+    </div>
+
+
+    <!-- TRUMP -->
+
+    <div
+        class="character trump"
+        onclick="characterClick('Trump')"
+    >
+
+        <div class="face">
+            🧑🏼
+        </div>
+
+        <div class="name">
+            Donald Trump
+        </div>
+
+    </div>
+
+
+    <!-- PUTIN -->
+
+    <div
+        class="character putin"
+        onclick="characterClick('Putin')"
+    >
+
+        <div class="face">
+            👨🏼
+        </div>
+
+        <div class="name">
+            Vladimir Putin
+        </div>
+
+    </div>
+
+
+    <!-- GAME OVER -->
+
+    <div id="gameOver">
+
+        <div class="result">
+
+            <h2>🎮 HẾT GIỜ!</h2>
+
+            <p>
+                Điểm của bạn:
+                <strong id="finalScore">0</strong>
+            </p>
+
+            <button onclick="startGame()">
+                CHƠI LẠI
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<p class="instructions">
+    🟡 Hãy click thật nhanh vào các mục tiêu xuất hiện trên màn hình!
+</p>
+
 
 <script>
-const canvas = document.getElementById("gameCanvas");
-const ctx = canvas.getContext("2d");
-const levelText = document.getElementById("levelText");
-const ammoText = document.getElementById("ammoText");
-const msg = document.getElementById("msg");
-const nextBtn = document.getElementById("nextBtn");
 
-const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+let score = 0;
+let time = 30;
 
-function playSound(type) {
-    try {
-        if (audioCtx.state === 'suspended') {
-            audioCtx.resume();
+let gameRunning = false;
+
+let timerInterval;
+let targetInterval;
+
+
+/* =========================
+   START GAME
+========================= */
+
+function startGame() {
+
+    score = 0;
+    time = 30;
+
+    gameRunning = true;
+
+    document.getElementById("score").innerText = score;
+    document.getElementById("time").innerText = time;
+
+    document.getElementById("gameOver").style.display = "none";
+
+    // Xóa target cũ
+    document
+        .querySelectorAll(".target")
+        .forEach(target => target.remove());
+
+    clearInterval(timerInterval);
+    clearInterval(targetInterval);
+
+    // Đồng hồ
+    timerInterval = setInterval(() => {
+
+        time--;
+
+        document.getElementById("time").innerText = time;
+
+        if (time <= 0) {
+            endGame();
         }
-        
-        const gainNode = audioCtx.createGain();
-        gainNode.connect(audioCtx.destination);
 
-        if (type === 'shoot') { 
-            const osc1 = audioCtx.createOscillator();
-            const osc2 = audioCtx.createOscillator();
-            
-            osc1.connect(gainNode);
-            osc2.connect(gainNode);
-            
-            osc1.type = 'sawtooth';
-            osc1.frequency.setValueAtTime(850, audioCtx.currentTime);
-            osc1.frequency.linearRampToValueAtTime(1600, audioCtx.currentTime + 0.08);
-            osc1.frequency.exponentialRampToValueAtTime(400, audioCtx.currentTime + 0.35);
-            
-            osc2.type = 'sine';
-            osc2.frequency.setValueAtTime(870, audioCtx.currentTime);
-            osc2.frequency.linearRampToValueAtTime(1620, audioCtx.currentTime + 0.08);
-            osc2.frequency.exponentialRampToValueAtTime(420, audioCtx.currentTime + 0.35);
-            
-            gainNode.gain.setValueAtTime(0.01, audioCtx.currentTime);
-            gainNode.gain.linearRampToValueAtTime(0.35, audioCtx.currentTime + 0.06); 
-            gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
-            
-            osc1.start(); osc2.start();
-            osc1.stop(audioCtx.currentTime + 0.35);
-            osc2.stop(audioCtx.currentTime + 0.35);
-            
-        } else if (type === 'bounce') { 
-            const osc = audioCtx.createOscillator();
-            osc.connect(gainNode);
-            osc.type = 'triangle';
-            osc.frequency.setValueAtTime(260, audioCtx.currentTime);
-            osc.frequency.setValueAtTime(420, audioCtx.currentTime + 0.03);
-            gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
-            gainNode.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.07);
-            osc.start(); osc.stop(audioCtx.currentTime + 0.07);
-        } else if (type === 'win') { 
-            const osc = audioCtx.createOscillator();
-            osc.connect(gainNode);
-            osc.type = 'square';
-            osc.frequency.setValueAtTime(440, audioCtx.currentTime);
-            osc.frequency.setValueAtTime(554, audioCtx.currentTime + 0.1);
-            osc.frequency.setValueAtTime(659, audioCtx.currentTime + 0.2);
-            gainNode.gain.setValueAtTime(0.2, audioCtx.currentTime);
-            gainNode.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
-            osc.start(); osc.stop(audioCtx.currentTime + 0.4);
-        } else if (type === 'lose') { 
-            const osc = audioCtx.createOscillator();
-            osc.connect(gainNode);
-            osc.type = 'sawtooth';
-            osc.frequency.setValueAtTime(180, audioCtx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(40, audioCtx.currentTime + 0.4);
-            gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
-            gainNode.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
-            osc.start(); osc.stop(audioCtx.currentTime + 0.4);
+    }, 1000);
+
+
+    // Tạo target
+    targetInterval = setInterval(() => {
+
+        createTarget();
+
+    }, 600);
+
+
+    createTarget();
+}
+
+
+/* =========================
+   CREATE TARGET
+========================= */
+
+function createTarget() {
+
+    if (!gameRunning) return;
+
+    const game = document.getElementById("game");
+
+    const target = document.createElement("div");
+
+    target.className = "target";
+
+    // Vị trí ngẫu nhiên
+    const maxX = game.clientWidth - 60;
+    const maxY = game.clientHeight - 100;
+
+    const x = Math.random() * maxX;
+    const y = Math.random() * maxY;
+
+    target.style.left = x + "px";
+    target.style.top = y + "px";
+
+
+    target.onclick = function(event) {
+
+        event.stopPropagation();
+
+        score++;
+
+        document.getElementById("score").innerText = score;
+
+        target.remove();
+    };
+
+
+    game.appendChild(target);
+
+
+    // Nếu không click thì tự biến mất
+    setTimeout(() => {
+
+        if (target.parentNode) {
+            target.remove();
         }
-    } catch(e) {}
+
+    }, 1200);
 }
 
-let currentLevel = 1;
-let ammo = 10;
-let gameOver = false;
-let gameWon = false;
-let bullets = [];
-let particles = []; 
-let mouseX = 250;
-let mouseY = 325;
-let wingAnimationTimer = 0; 
 
-const player = { x: 60, y: 490, width: 45, height: 80 };
-let enemy = { x: 400, y: 200, width: 45, height: 80, alive: true };
-let walls = [];
+/* =========================
+   CHARACTER CLICK
+========================= */
 
-canvas.addEventListener("mousemove", (e) => {
-    const rect = canvas.getBoundingClientRect();
-    mouseX = e.clientX - rect.left;
-    mouseY = e.clientY - rect.top;
-});
+function characterClick(name) {
 
-canvas.addEventListener("mousedown", (e) => {
-    if (gameOver || gameWon || ammo <= 0) return;
+    if (!gameRunning) return;
 
-    const gunX = player.x + player.width + 18;
-    const gunY = player.y + 23;
-    const angle = Math.atan2(mouseY - gunY, mouseX - gunX);
-    
-    bullets.push({
-        x: gunX,
-        y: gunY,
-        vx: Math.cos(angle) * 12,
-        vy: Math.sin(angle) * 12,
-        angle: angle,
-        width: 34,  
-        height: 26,
-        bounces: 0
-    });
+    score += 2;
 
-    playSound('shoot'); 
-    ammo--;
-    ammoText.innerText = ammo;
-});
+    document.getElementById("score").innerText = score;
 
-function createExplosion(x, y, color, count = 12) {
-    for (let i = 0; i < count; i++) {
-        particles.push({
-            x: x, y: y,
-            vx: (Math.random() - 0.5) * 6,
-            vy: (Math.random() - 0.5) * 6,
-            radius: Math.random() * 4 + 2,
-            alpha: 1,
-            color: color
-        });
-    }
 }
 
-function generateLevel(lvl) {
-    ammo = 10;
-    ammoText.innerText = ammo;
-    gameOver = false;
-    gameWon = false;
-    msg.style.display = "none";
-    nextBtn.style.display = "none";
-    bullets = [];
-    particles = [];
-    enemy.alive = true;
-    levelText.innerText = lvl;
 
-    walls = [{ x: 0, y: 570, width: 500, height: 80 }];
+/* =========================
+   END GAME
+========================= */
 
-    enemy.x = 330 + (Math.sin(lvl * 12) * 60);
-    enemy.y = 400 - ((lvl % 4) * 65);
+function endGame() {
 
-    if (lvl % 3 === 1) {
-        walls.push({ x: 230, y: 160, width: 45, height: 240 });
-    } else if (lvl % 3 === 2) {
-        walls.push({ x: 160, y: 310, width: 200, height: 40 });
-    } else {
-        walls.push({ x: 210, y: 100, width: 45, height: 200 });
-        walls.push({ x: 300, y: 360, width: 110, height: 40 });
-    }
+    gameRunning = false;
+
+    clearInterval(timerInterval);
+    clearInterval(targetInterval);
+
+    document
+        .querySelectorAll(".target")
+        .forEach(target => target.remove());
+
+    document.getElementById("finalScore").innerText = score;
+
+    document.getElementById("gameOver").style.display = "flex";
 }
 
-function resetLevel() {
-    generateLevel(currentLevel);
-}
+</script>
 
-function nextLevel() {
-    if (currentLevel < 369) {
-        currentLevel++;
-        generateLevel(currentLevel);
-    } else {
-        msg.innerHTML = "<span style='color: #ffeb3b;'>BẠN ĐÃ PHÁ ĐẢO TOÀN BỘ 369 MÀN!</span>";
-        msg.style.display = "block";
-    }
-}
-
-function checkCollision(rect1, rect2) {
-    return rect1.x < rect2.x + rect2.width &&
-           rect1.x + rect1.width > rect2.x &&
-           rect1.y < rect2.y + rect2.height &&
-           rect1.y + rect1.height > rect2.y;
-}
-
-function update() {
-    if (gameOver || gameWon) return;
-
-    wingAnimationTimer += 0.25; 
-
-    for (let i = particles.length - 1; i >= 0; i--) {
-        let p = particles[i];
-        p.x += p.vx; p.y += p.vy;
-        p.alpha -= 0.03;
-        if (p.alpha <= 0) particles.splice(i, 1);
-    }
-
-    for (let i = bullets.length - 1; i >= 0; i--) {
-        let b = bullets[i];
-        b.x += b.vx;
-        b.y += b.vy;
-        b.angle = Math.atan2(b.vy, b.vx); 
-
-        if (b.x < 0 || b.x > canvas.width) {
-            b.vx *= -1; b.bounces++; playSound('bounce');
-            createExplosion(b.x, b.y, '#ffd54f', 6);
-        }
-        if (b.y < 0) {
-            b.vy *= -1; b.bounces++; playSound('bounce');
-            createExplosion(b.x, b.y, '#ffd54f', 6);
-        }
-        
-        walls.forEach(w => {
-            let bulletRect = { x: b.x - b.width/2, y: b.y - b.height/2, width: b.width, height: b.height };
-            if (checkCollision(bulletRect, w)) {
-                if (b.x < w.x || b.x > w.x + w.width) b.vx *= -1;
-                else b.vy *= -1;
-                b.bounces++;
-                playSound('bounce');
-createExplosion(b.x, b.y, '#ff6b81', 8);
-}
-});
-if (enemy.alive) {
-let bulletRect = { x: b.x - b.width/2, y: b.y - b.height/2, width: b.width, height: b.height };
-if (checkCollision(bulletRect, enemy)) {
-enemy.alive = false;
-createExplosion(b.x, b.y, '#ff1744', 25);
-bullets.splice(i, 1);
-}
-}
-if (b.bounces > 7 || b.y > canvas.height) {
-bullets.splice(i, 1);
-}
-}
-if (!enemy.alive && !gameWon) {
-gameWon = true;
-playSound('win');
-msg.innerHTML = "chúc mừng thằng da đen trước màn hình";
-msg.style.display = "block";
-nextBtn.style.display = "inline-block";
-} else if (enemy.alive && ammo === 0 && bullets.length === 0 && !gameOver) {
-gameOver = true;
-playSound('lose');
-msg.innerHTML = "bắn như tật";
-msg.style.display = "block";
-}
-}
-function draw() {
-ctx.fillStyle = "#120e24";
-ctx.fillRect(0, 0, canvas.width, canvas.height);
-walls.forEach(w => {
-ctx.fillStyle = "#2d264d";
-ctx.fillRect(w.x, w.y, w.width, w.height);
-ctx.strokeStyle = "#5a4d96";
-ctx.lineWidth = 4;
-ctx.strokeRect(w.x, w.y, w.width, w.height);
-});
-if (!gameOver && !gameWon && ammo > 0) {
-ctx.strokeStyle = "rgba(255, 10, 10, 0.95)";
-ctx.lineWidth = 3;
-ctx.shadowBlur = 8;
-ctx.shadowColor = "red";
-ctx.beginPath();
-ctx.moveTo(player.x + player.width + 12, player.y + 23);
-ctx.lineTo(mouseX, mouseY);
-ctx.stroke();
-ctx.shadowBlur = 0;
-}
-ctx.fillStyle = "#8a2be2";
-ctx.fillRect(player.x, player.y + 20, player.width, player.height - 20);
-ctx.fillStyle = "#a846ff";
-ctx.fillRect(player.x + 5, player.y - 15, player.width - 10, 35);
-ctx.fillStyle = "#000";
-ctx.fillRect(player.x + 18, player.y - 5, 25, 8);
-const gunX = player.x + player.width;
-const gunY = player.y + 18;
-ctx.fillStyle = "#e0e0e0";
-ctx.fillRect(gunX, gunY, 24, 9);
-ctx.fillStyle = "#ffffff";
-ctx.fillRect(gunX + 6, gunY - 2, 18, 3);
-ctx.fillStyle = "#505050";
-ctx.fillRect(gunX + 2, gunY + 9, 6, 11);
-if (enemy.alive) {
-ctx.fillStyle = "#0a369d";
-ctx.fillRect(enemy.x, enemy.y + 20, enemy.width, enemy.height - 20);
-ctx.fillStyle = "#ff1744";
-ctx.fillRect(enemy.x + enemy.width/2 - 4, enemy.y + 20, 8, 22);
-const headX = enemy.x + 4;
-const headY = enemy.y - 15;
-const headW = enemy.width - 8;
-const headH = 35;
-ctx.fillStyle = "#ffb74d";
-ctx.fillRect(headX, headY, headW, headH);
-ctx.fillStyle = "#ffd54f";
-ctx.fillRect(headX - 3, headY - 6, headW + 6, 10);
-ctx.beginPath();
-ctx.moveTo(headX - 3, headY + 4);
-ctx.lineTo(headX + 12, headY - 12);
-ctx.lineTo(headX + headW + 2, headY + 4);
-ctx.closePath();
-ctx.fill();
-ctx.fillStyle = "#fff";
-ctx.fillRect(headX + 4, headY + 10, 8, 4);
-ctx.fillRect(headX + headW - 12, headY + 10, 8, 4);
-ctx.fillStyle = "#000";
-ctx.fillRect(headX + 6, headY + 10, 4, 4);
-ctx.fillRect(headX + headW - 10, headY + 4, 4, 4);
-ctx.fillStyle = "#ff5252";
-ctx.fillRect(headX + headW/2 - 6, headY + 22, 12, 4);
-}
-particles.forEach(p => {
-ctx.save();
-ctx.globalAlpha = p.alpha;
-ctx.fillStyle = p.color;
-ctx.beginPath();
-ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-ctx.fill();
-ctx.restore();
-});
-bullets.forEach(b => {
-ctx.save();
-ctx.translate(b.x, b.y);
-ctx.rotate(b.angle);
-ctx.fillStyle = "#5d4037";
-let wingY = Math.sin(wingAnimationTimer) * 14;
-ctx.beginPath();
-ctx.moveTo(-12, 0); ctx.lineTo(0, -wingY - 16); ctx.lineTo(12, 0); ctx.lineTo(0, wingY + 16);
-ctx.closePath(); ctx.fill();
-ctx.fillStyle = "#3e2723"; ctx.fillRect(-16, -7, 26, 14);
-ctx.fillStyle = "#fff"; ctx.fillRect(-22, -5, 7, 10);
-ctx.fillStyle = "#ffffff"; ctx.fillRect(10, -8, 11, 16);
-ctx.fillStyle = "#ffd54f"; ctx.beginPath(); ctx.moveTo(21, -4); ctx.lineTo(29, 0); ctx.lineTo(21, 4); ctx.closePath(); ctx.fill();
-ctx.restore();
-});
-}
-function gameLoop() {
-update();
-draw();
-requestAnimationFrame(gameLoop);
-}
-generateLevel(currentLevel);
-gameLoop();
+</body>
+</html>
